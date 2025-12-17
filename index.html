@@ -1,0 +1,1865 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IPL 2026 Team Showcase</title>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            /* Default Variables (GT) - Updated dynamically via JS */
+            --primary-bg: #1B2133;
+            --secondary-bg: #263A5C;
+            --accent-color: #D4AF37;
+            --text-color: #ffffff;
+            --card-bg: #ffffff;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f4f4f9;
+            transition: background-color 0.5s ease;
+        }
+
+        /* --- NAVIGATION / SELECTOR --- */
+        nav {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 15px 20px;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-brand {
+            font-family: 'Oswald', sans-serif;
+            font-size: 1.5rem;
+            color: #333;
+        }
+
+        select.team-selector {
+            padding: 10px 20px;
+            font-size: 1rem;
+            border-radius: 25px;
+            border: 2px solid #ddd;
+            font-family: 'Poppins', sans-serif;
+            cursor: pointer;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        select.team-selector:hover {
+            border-color: #333;
+        }
+
+        /* --- HERO HEADER --- */
+        header {
+            background: linear-gradient(135deg, var(--primary-bg) 0%, var(--secondary-bg) 100%);
+            color: var(--text-color);
+            padding: 120px 20px 60px; /* Top padding for fixed nav */
+            text-align: center;
+            position: relative;
+            clip-path: polygon(0 0, 100% 0, 100% 90%, 0 100%);
+            transition: background 0.8s ease;
+        }
+
+        .team-logo {
+            width: 140px;
+            height: 140px;
+            object-fit: contain;
+            filter: drop-shadow(0 0 15px rgba(255,255,255,0.2));
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        h1 {
+            font-family: 'Oswald', sans-serif;
+            font-size: 2.5rem;
+            margin: 20px 0 10px;
+            text-transform: uppercase;
+        }
+
+        /* Trophies */
+        .trophy-case {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+
+        .trophy-badge {
+            background: var(--accent-color);
+            color: #000;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+        }
+
+        /* --- INFO BAR --- */
+        .info-bar {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            max-width: 1000px;
+            margin: -40px auto 40px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            position: relative;
+            padding: 20px;
+            z-index: 10;
+        }
+
+        .info-item {
+            text-align: center;
+            padding: 10px;
+            border-right: 1px solid #eee;
+        }
+
+        .info-item:last-child { border-right: none; }
+
+        .info-item h4 {
+            color: #888;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .info-item p {
+            font-weight: 600;
+            color: #333;
+            font-size: 1.1rem;
+        }
+
+        /* --- SQUAD GRID --- */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto 50px;
+            padding: 0 20px;
+        }
+
+        .section-heading {
+            font-family: 'Oswald', sans-serif;
+            font-size: 2rem;
+            margin-bottom: 20px;
+            border-left: 5px solid var(--accent-color);
+            padding-left: 15px;
+            color: #333;
+        }
+
+        .squad-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 25px;
+        }
+
+        .player-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
+            opacity: 0;
+            animation: fadeIn 0.5s forwards;
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        .player-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+
+        .card-img-wrap {
+            height: 250px;
+            background: radial-gradient(circle, #f0f0f0 0%, #e6e6e6 100%);
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-img-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            object-position: bottom;
+            transition: transform 0.3s;
+        }
+
+        .player-card:hover img {
+            transform: scale(1.05);
+        }
+
+        .captain-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--accent-color);
+            color: #000;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            z-index: 5;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .card-info {
+            padding: 15px;
+            text-align: center;
+            border-top: 3px solid var(--accent-color);
+        }
+
+        .p-name {
+            font-family: 'Oswald', sans-serif;
+            font-size: 1.2rem;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .p-role {
+            font-size: 0.9rem;
+            color: #666;
+            background: #f4f4f9;
+            padding: 3px 10px;
+            border-radius: 4px;
+            display: inline-block;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .info-bar { grid-template-columns: 1fr 1fr; margin-top: -20px; }
+            .info-item { border-bottom: 1px solid #eee; }
+            .info-item:nth-child(even) { border-right: none; }
+            .info-item:nth-last-child(-n+2) { border-bottom: none; }
+            h1 { font-size: 1.8rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="nav-brand">IPL 2026 SQUAD HUB</div>
+        <select id="teamSelect" class="team-selector">
+            <option value="CSK">Chennai Super Kings</option>
+            <option value="DC">Delhi Capitals</option>
+            <option value="GT">Gujarat Titans</option>
+            <option value="KKR">Kolkata Knight Riders</option>
+            <option value="LSG">Lucknow Super Giants</option>
+            <option value="MI">Mumbai Indians</option>
+            <option value="PBKS">Punjab Kings</option>
+            <option value="RR">Rajasthan Royals</option>
+            <option value="RCB">Royal Challengers Bengaluru</option>
+            <option value="SRH">Sunrisers Hyderabad</option>
+        </select>
+    </nav>
+
+    <header>
+        <img id="teamLogo" class="team-logo" src="" alt="Team Logo">
+        <h1 id="teamName">Loading...</h1>
+        <div id="trophyCase" class="trophy-case"></div>
+    </header>
+
+    <div class="info-bar">
+        <div class="info-item">
+            <h4>Captain</h4>
+            <p id="t-captain">-</p>
+        </div>
+        <div class="info-item">
+            <h4>Coach</h4>
+            <p id="t-coach">-</p>
+        </div>
+        <div class="info-item">
+            <h4>Owner</h4>
+            <p id="t-owner">-</p>
+        </div>
+        <div class="info-item">
+            <h4>Home Venue</h4>
+            <p id="t-venue">-</p>
+        </div>
+    </div>
+
+    <main class="container">
+        <h2 class="section-heading">Official Squad</h2>
+        <div id="squadGrid" class="squad-grid">
+            <!-- Player Cards injected here -->
+        </div>
+    </main>
+
+    <script>
+        // --- 1. THE DATA DATABASE ---
+        const teamsDB = {
+    "CSK": {
+        "theme": {
+            "primary": "#F9CD05", // Yellow
+            "secondary": "#113E5D", // Navy Blue
+            "accent": "#F9CD05" // Yellow
+        },
+        "data": {
+            "team": {
+                "name": "Chennai Super Kings 2010, 2011, 2018, 2021, 2023 Official Team Site",
+                "logo": "https://documents.iplt20.com/ipl/CSK/logos/Logooutline/CSKoutline.png",
+                "winning_years": [
+                    "2010, 2011, 2018, 2021, 2023"
+                ],
+                "captain": "MS Dhoni",
+                "owner": "Chennai Super Kings Cricket Limited",
+                "coach": "Stephen Fleming",
+                "venue": "M. A. Chidambaram Stadium"
+            },
+            "squad": [
+                {
+                    "name": "MS DHONI",
+                    "role": "WK-Batter",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/57.png"
+                },
+                {
+                    "name": "SANJU SAMSON",
+                    "role": "WK-Batter",
+                    "photo": "https://documents.iplt20.com/ipl/assets/images/Default-Men.png"
+                },
+                {
+                    "name": "RUTURAJ GAIKWAD",
+                    "role": "Batter",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/102.png"
+                },
+                {
+                    "name": "DEWALD BREVIS",
+                    "role": "Batter",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/797.png"
+                },
+                {
+                    "name": "AYUSH MHATRE",
+                    "role": "Batter",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/3497.png"
+                },
+                {
+                    "name": "KARTIK SHARMA",
+                    "role": "WK-Batter",
+                    "photo": "https://documents.iplt20.com/ipl/assets/images/Default-Men.png"
+                },
+                {
+                    "name": "SARFARAZ KHAN",
+                    "role": "Batter",
+                    "photo": "https://documents.iplt20.com/ipl/assets/images/Default-Men.png"
+                },
+                {
+                    "name": "URVIL PATEL",
+                    "role": "WK-Batter",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/1486.png"
+                },
+                {
+                    "name": "ANSHUL KAMBOJ",
+                    "role": "All-Rounder",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/3106.png"
+                },
+                {
+                    "name": "JAMIE OVERTON",
+                    "role": "All-Rounder",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/1216.png"
+                },
+                {
+                    "name": "RAMAKRISHNA GHOSH",
+                    "role": "All-Rounder",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/3559.png"
+                },
+                {
+                    "name": "PRASHANT VEER",
+                    "role": "All-Rounder",
+                    "photo": "https://documents.iplt20.com/ipl/assets/images/Default-Men.png"
+                },
+                {
+                    "name": "MATTHEW WILLIAM SHORT",
+                    "role": "All-Rounder",
+                    "photo": "https://documents.iplt20.com/ipl/assets/images/Default-Men.png"
+                },
+                {
+                    "name": "AMAN KHAN",
+                    "role": "All-Rounder",
+                    "photo": "https://documents.iplt20.com/ipl/assets/images/Default-Men.png"
+                },
+                {
+                    "name": "ZAK FOULKES",
+                    "role": "All-Rounder",
+                    "photo": "https://documents.iplt20.com/ipl/assets/images/Default-Men.png"
+                },
+                {
+                    "name": "SHIVAM DUBE",
+                    "role": "All-Rounder",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/211.png"
+                },
+                {
+                    "name": "KHALEEL AHMED",
+                    "role": "Bowler",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/8.png"
+                },
+                {
+                    "name": "NOOR AHMAD",
+                    "role": "Bowler",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/975.png"
+                },
+                {
+                    "name": "MUKESH CHOUDHARY",
+                    "role": "Bowler",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/970.png"
+                },
+                {
+                    "name": "NATHAN ELLIS",
+                    "role": "Bowler",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/633.png"
+                },
+                {
+                    "name": "SHREYAS GOPAL",
+                    "role": "Bowler",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/192.png"
+                },
+                {
+                    "name": "GURJAPNEET SINGH",
+                    "role": "Bowler",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/2256.png"
+                },
+                {
+                    "name": "AKEAL HOSEIN",
+                    "role": "Bowler",
+                    "photo": "https://documents.iplt20.com/ipl/assets/images/Default-Men.png"
+                },
+                {
+                    "name": "MATT HENRY",
+                    "role": "Bowler",
+                    "photo": "https://documents.iplt20.com/ipl/assets/images/Default-Men.png"
+                },
+                {
+                    "name": "RAHUL CHAHAR",
+                    "role": "Bowler",
+                    "photo": "https://documents.iplt20.com/ipl/assets/images/Default-Men.png"
+                }
+            ]
+        }
+    },
+    "DC": {
+        "theme": {
+            "primary": "#00488D", // Blue
+            "secondary": "#DC2F2D", // Red
+            "accent": "#DC2F2D"
+        },
+        "data": {
+            "team": {
+                "name": "Delhi Capitals Official Team Site",
+                "logo": "https://documents.iplt20.com/ipl/DC/Logos/LogoOutline/DCoutline.png",
+                "winning_years": [],
+                "captain": "Axar Patel",
+                "owner": "JSW GMR Cricket Pvt Ltd",
+                "coach": "Hemang Badani",
+                "venue": "Arun Jaitley Stadium"
+            },
+            "squad": [
+                {
+                    "name": "KL RAHUL",
+                    "role": "WK-Batter",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/19.png"
+                },
+                {
+                    "name": "KARUN NAIR",
+                    "role": "Batter",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/131.png"
+                },
+                {
+                    "name": "DAVID MILLER",
+                    "role": "Batter",
+                    "photo": "https://documents.iplt20.com/ipl/assets/images/Default-Men.png"
+                },
+                {
+                    "name": "BEN DUCKETT",
+                    "role": "WK-Batter",
+                    "photo": "https://documents.iplt20.com/ipl/assets/images/Default-Men.png"
+                },
+                {
+                    "name": "PATHUM NISSANKA",
+                    "role": "Batter",
+                    "photo": "https://documents.iplt20.com/ipl/assets/images/Default-Men.png"
+                },
+                {
+                    "name": "SAHIL PARAKH",
+                    "role": "Batter",
+                    "photo": "https://documents.iplt20.com/ipl/assets/images/Default-Men.png"
+                },
+                {
+                    "name": "PRITHVI SHAW",
+                    "role": "Batter",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2024/51.png"
+                },
+                {
+                    "name": "ABISHEK POREL",
+                    "role": "WK-Batter",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/1580.png"
+                },
+                {
+                    "name": "TRISTAN STUBBS",
+                    "role": "WK-Batter",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/1017.png"
+                },
+                {
+                    "name": "AXAR PATEL",
+                    "role": "All-Rounder",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/110.png"
+                },
+                {
+                    "name": "SAMEER RIZVI",
+                    "role": "All-Rounder",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/1229.png"
+                },
+                {
+                    "name": "ASHUTOSH SHARMA",
+                    "role": "All-Rounder",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/3109.png"
+                },
+                {
+                    "name": "VIPRAJ NIGAM",
+                    "role": "All-Rounder",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/3560.png"
+                },
+                {
+                    "name": "AJAY MANDAL",
+                    "role": "All-Rounder",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/1931.png"
+                },
+                {
+                    "name": "TRIPURANA VIJAY",
+                    "role": "All-Rounder",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/3563.png"
+                },
+                {
+                    "name": "MADHAV TIWARI",
+                    "role": "All-Rounder",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/3561.png"
+                },
+                {
+                    "name": "AUQIB DAR",
+                    "role": "All-Rounder",
+                    "photo": "https://documents.iplt20.com/ipl/assets/images/Default-Men.png"
+                },
+                {
+                    "name": "NITISH RANA",
+                    "role": "All-Rounder",
+                    "photo": "https://documents.iplt20.com/ipl/assets/images/Default-Men.png"
+                },
+                {
+                    "name": "MITCHELL STARC",
+                    "role": "Bowler",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/31.png"
+                },
+                {
+                    "name": "T. NATARAJAN",
+                    "role": "Bowler",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/224.png"
+                },
+                {
+                    "name": "MUKESH KUMAR",
+                    "role": "Bowler",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/1462.png"
+                },
+                {
+                    "name": "DUSHMANTHA CHAMEERA",
+                    "role": "Bowler",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/608.png"
+                },
+                {
+                    "name": "LUNGISANI NGIDI",
+                    "role": "Bowler",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2023/99.png"
+                },
+                {
+                    "name": "KYLE JAMIESON",
+                    "role": "Bowler",
+                    "photo": "https://documents.iplt20.com/ipl/assets/images/Default-Men.png"
+                },
+                {
+                    "name": "KULDEEP YADAV",
+                    "role": "Bowler",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/14.png"
+                }
+            ]
+        }
+    },
+    "GT": {
+        "theme": {
+            "primary": "#1B2133", // Navy
+            "secondary": "#263A5C", // Light Navy
+            "accent": "#D4AF37" // Gold
+        },
+        "data": {
+            "team": {
+                "name": "Gujarat Titans 2022 Official Team Site",
+                "logo": "https://documents.iplt20.com/ipl/GT/Logos/Logooutline/GToutline.png",
+                "winning_years": [
+                    "2022"
+                ],
+                "captain": "Shubman Gill",
+                "owner": "Irelia Sports India Private Limited",
+                "coach": "Ashish Nehra",
+                "venue": "Narendra Modi Stadium"
+            },
+            "squad": [
+                {
+                    "name": "SHUBMAN GILL",
+                    "role": "Batter",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/62.png"
+                },
+                {
+                    "name": "JOS BUTTLER",
+                    "role": "WK-Batter",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/182.png"
+                },
+                {
+                    "name": "KUMAR KUSHAGRA",
+                    "role": "WK-Batter",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/3101.png"
+                },
+                {
+                    "name": "ANUJ RAWAT",
+                    "role": "WK-Batter",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/534.png"
+                },
+                {
+                    "name": "TOM BANTON",
+                    "role": "WK-Batter",
+                    "photo": "https://documents.iplt20.com/ipl/assets/images/Default-Men.png"
+                },
+                {
+                    "name": "GLENN PHILLIPS",
+                    "role": "Batter",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/635.png"
+                },
+                {
+                    "name": "NISHANT SINDHU",
+                    "role": "All-Rounder",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/791.png"
+                },
+                {
+                    "name": "WASHINGTON SUNDAR",
+                    "role": "All-Rounder",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/20.png"
+                },
+                {
+                    "name": "MOHD. ARSHAD KHAN",
+                    "role": "All-Rounder",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/988.png"
+                },
+                {
+                    "name": "SAI KISHORE",
+                    "role": "All-Rounder",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/544.png"
+                },
+                {
+                    "name": "JAYANT YADAV",
+                    "role": "All-Rounder",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/165.png"
+                },
+                {
+                    "name": "JASON HOLDER",
+                    "role": "All-Rounder",
+                    "photo": "https://documents.iplt20.com/ipl/assets/images/Default-Men.png"
+                },
+                {
+                    "name": "SAI SUDHARSAN",
+                    "role": "All-Rounder",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/976.png"
+                },
+                {
+                    "name": "SHAHRUKH KHAN",
+                    "role": "All-Rounder",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/590.png"
+                },
+                {
+                    "name": "KAGISO RABADA",
+                    "role": "Bowler",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/116.png"
+                },
+                {
+                    "name": "MOHAMMED SIRAJ",
+                    "role": "Bowler",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/63.png"
+                },
+                {
+                    "name": "PRASIDH KRISHNA",
+                    "role": "Bowler",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/150.png"
+                },
+                {
+                    "name": "MANAV SUTHAR",
+                    "role": "Bowler",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/2443.png"
+                },
+                {
+                    "name": "GURNOOR SINGH BRAR",
+                    "role": "Bowler",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/1231.png"
+                },
+                {
+                    "name": "ISHANT SHARMA",
+                    "role": "Bowler",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/50.png"
+                },
+                {
+                    "name": "ASHOK SHARMA",
+                    "role": "Bowler",
+                    "photo": "https://documents.iplt20.com/ipl/assets/images/Default-Men.png"
+                },
+                {
+                    "name": "PRITHVI RAJ YARRA",
+                    "role": "Bowler",
+                    "photo": "https://documents.iplt20.com/ipl/assets/images/Default-Men.png"
+                },
+                {
+                    "name": "LUKE WOOD",
+                    "role": "Bowler",
+                    "photo": "https://documents.iplt20.com/ipl/assets/images/Default-Men.png"
+                },
+                {
+                    "name": "RAHUL TEWATIA",
+                    "role": "Bowler",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/120.png"
+                },
+                {
+                    "name": "RASHID KHAN",
+                    "role": "Bowler",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/218.png"
+                }
+            ]
+        }
+    },
+    "KKR": {
+        "theme": {
+            "primary": "#3A225D", // Purple
+            "secondary": "#2D1E45", // Dark Purple
+            "accent": "#F2C94C" // Gold
+        },
+        "data": {
+            "team": {
+                "name": "Kolkata Knight Riders 2012, 2014, 2024 Official Team Site",
+                "logo": "https://documents.iplt20.com/ipl/KKR/Logos/Logooutline/KKRoutline.png",
+                "winning_years": [
+                    "2012, 2014, 2024"
+                ],
+                "captain": "Ajinkya Rahane",
+                "owner": "Knight Riders Sports Private Limited",
+                "coach": "Abhishek Nayar",
+                "venue": "Eden Gardens"
+            },
+            "squad": [
+                {
+                    "name": "AJINKYA RAHANE",
+                    "role": "Batter",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/44.png"
+                },
+                {
+                    "name": "RINKU SINGH",
+                    "role": "Batter",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/152.png"
+                },
+                {
+                    "name": "ANGKRISH RAGHUVANSHI",
+                    "role": "Batter",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/787.png"
+                },
+                {
+                    "name": "MANISH PANDEY",
+                    "role": "Batter",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/16.png"
+                },
+                {
+                    "name": "CAMERON GREEN",
+                    "role": "Batter",
+                    "photo": "https://documents.iplt20.com/ipl/assets/images/Default-Men.png"
+                },
+                {
+                    "name": "FINN ALLEN",
+                    "role": "WK-Batter",
+                    "photo": "https://documents.iplt20.com/ipl/assets/images/Default-Men.png"
+                },
+                {
+                    "name": "TEJASVI SINGH",
+                    "role": "WK-Batter",
+                    "photo": "https://documents.iplt20.com/ipl/assets/images/Default-Men.png"
+                },
+                {
+                    "name": "RAHUL TRIPATHI",
+                    "role": "Batter",
+                    "photo": "https://documents.iplt20.com/ipl/assets/images/Default-Men.png"
+                },
+                {
+                    "name": "TIM SEIFERT",
+                    "role": "WK-Batter",
+                    "photo": "https://documents.iplt20.com/ipl/assets/images/Default-Men.png"
+                },
+                {
+                    "name": "ROVMAN POWELL",
+                    "role": "Batter",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/329.png"
+                },
+                {
+                    "name": "ANUKUL ROY",
+                    "role": "All-Rounder",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/160.png"
+                },
+                {
+                    "name": "SARTHAK RANJAN",
+                    "role": "All-Rounder",
+                    "photo": "https://documents.iplt20.com/ipl/assets/images/Default-Men.png"
+                },
+                {
+                    "name": "DAKSH KAMRA",
+                    "role": "All-Rounder",
+                    "photo": "https://documents.iplt20.com/ipl/assets/images/Default-Men.png"
+                },
+                {
+                    "name": "RACHIN RAVINDRA",
+                    "role": "All-Rounder",
+                    "photo": "https://documents.iplt20.com/ipl/assets/images/Default-Men.png"
+                },
+                {
+                    "name": "RAMANDEEP SINGH",
+                    "role": "All-Rounder",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/991.png"
+                },
+                {
+                    "name": "VAIBHAV ARORA",
+                    "role": "Bowler",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/583.png"
+                },
+                {
+                    "name": "MATHEESHA PATHIRANA",
+                    "role": "Bowler",
+                    "photo": "https://documents.iplt20.com/ipl/assets/images/Default-Men.png"
+                },
+                {
+                    "name": "KARTIK TYAGI",
+                    "role": "Bowler",
+                    "photo": "https://documents.iplt20.com/ipl/assets/images/Default-Men.png"
+                },
+                {
+                    "name": "PRASHANT SOLANKI",
+                    "role": "Bowler",
+                    "photo": "https://documents.iplt20.com/ipl/assets/images/Default-Men.png"
+                },
+                {
+                    "name": "MUSTAFIZUR RAHMAN",
+                    "role": "Bowler",
+                    "photo": "https://documents.iplt20.com/ipl/assets/images/Default-Men.png"
+                },
+                {
+                    "name": "AKASH DEEP",
+                    "role": "Bowler",
+                    "photo": "https://documents.iplt20.com/ipl/assets/images/Default-Men.png"
+                },
+                {
+                    "name": "HARSHIT RANA",
+                    "role": "Bowler",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/1013.png"
+                },
+                {
+                    "name": "UMRAN MALIK",
+                    "role": "Bowler",
+                    "photo": "https://documents.iplt20.com/ipl/assets/images/Default-Men.png"
+                },
+                {
+                    "name": "SUNIL NARINE",
+                    "role": "Bowler",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/156.png"
+                },
+                {
+                    "name": "VARUN CHAKARAVARTHY",
+                    "role": "Bowler",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/140.png"
+                }
+            ]
+        }
+    },
+    "LSG": {
+        "theme": {
+            "primary": "#005DA0", // Blue
+            "secondary": "#A0D1F2", // Cyan
+            "accent": "#FF6D00" // Orange
+        },
+        "data": {
+            "team": {
+                "name": "Lucknow Super Giants Official Team Site",
+                "logo": "https://documents.iplt20.com/ipl/LSG/Logos/Logooutline/LSGoutline.png",
+                "winning_years": [],
+                "captain": "Rishabh Pant",
+                "owner": "RPSG Sports Private Limited",
+                "coach": "Justin Langer",
+                "venue": "BRSABV Ekana Cricket Stadium"
+            },
+            "squad": [
+                {
+                    "name": "RISHABH PANT",
+                    "role": "WK-Batter",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/18.png"
+                },
+                {
+                    "name": "AIDEN MARKRAM",
+                    "role": "Batter",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/287.png"
+                },
+                {
+                    "name": "HIMMAT SINGH",
+                    "role": "Batter",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/203.png"
+                },
+                {
+                    "name": "MATTHEW BREETZKE",
+                    "role": "Batter",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/2805.png"
+                },
+                {
+                    "name": "MUKUL CHOUDHARY",
+                    "role": "WK-Batter",
+                    "photo": "https://documents.iplt20.com/ipl/assets/images/Default-Men.png"
+                },
+                {
+                    "name": "AKSHAT RAGHUWANSHI",
+                    "role": "Batter",
+                    "photo": "https://documents.iplt20.com/ipl/assets/images/Default-Men.png"
+                },
+                {
+                    "name": "JOSH INGLIS",
+                    "role": "WK-Batter",
+                    "photo": "https://documents.iplt20.com/ipl/assets/images/Default-Men.png"
+                },
+                {
+                    "name": "NICHOLAS POORAN",
+                    "role": "WK-Batter",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/136.png"
+                },
+                {
+                    "name": "MITCHELL MARSH",
+                    "role": "All-Rounder",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/40.png"
+                },
+                {
+                    "name": "ABDUL SAMAD",
+                    "role": "All-Rounder",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/525.png"
+                },
+                {
+                    "name": "SHAHBAZ AHAMAD",
+                    "role": "All-Rounder",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/523.png"
+                },
+                {
+                    "name": "ARSHIN KULKARNI",
+                    "role": "All-Rounder",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/2788.png"
+                },
+                {
+                    "name": "WANINDU HASARANGA",
+                    "role": "All-Rounder",
+                    "photo": "https://documents.iplt20.com/ipl/assets/images/Default-Men.png"
+                },
+                {
+                    "name": "AYUSH BADONI",
+                    "role": "All-Rounder",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/985.png"
+                },
+                {
+                    "name": "MOHAMMAD SHAMI",
+                    "role": "Bowler",
+                    "photo": "https://documents.iplt20.com/ipl/assets/images/Default-Men.png"
+                },
+                {
+                    "name": "AVESH KHAN",
+                    "role": "Bowler",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/109.png"
+                },
+                {
+                    "name": "M. SIDDHARTH",
+                    "role": "Bowler",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/532.png"
+                },
+                {
+                    "name": "DIGVESH SINGH",
+                    "role": "Bowler",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/3565.png"
+                },
+                {
+                    "name": "AKASH SINGH",
+                    "role": "Bowler",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/535.png"
+                },
+                {
+                    "name": "PRINCE YADAV",
+                    "role": "Bowler",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/1225.png"
+                },
+                {
+                    "name": "ARJUN TENDULKAR",
+                    "role": "Bowler",
+                    "photo": "https://documents.iplt20.com/ipl/assets/images/Default-Men.png"
+                },
+                {
+                    "name": "ANRICH NORTJE",
+                    "role": "Bowler",
+                    "photo": "https://documents.iplt20.com/ipl/assets/images/Default-Men.png"
+                },
+                {
+                    "name": "NAMAN TIWARI",
+                    "role": "Bowler",
+                    "photo": "https://documents.iplt20.com/ipl/assets/images/Default-Men.png"
+                },
+                {
+                    "name": "MAYANK YADAV",
+                    "role": "Bowler",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2024/987.png"
+                },
+                {
+                    "name": "MOHSIN KHAN",
+                    "role": "Bowler",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2024/541.png"
+                }
+            ]
+        }
+    },
+    "MI": {
+        "theme": {
+            "primary": "#004B8D", // Blue
+            "secondary": "#003A6D", // Dark Blue
+            "accent": "#D1AB3E" // Gold
+        },
+        "data": {
+            "team": {
+                "name": "Mumbai Indians 2013, 2015, 2017, 2019, 2020 Official Team Site",
+                "logo": "https://documents.iplt20.com/ipl/MI/Logos/Logooutline/MIoutline.png",
+                "winning_years": [
+                    "2013, 2015, 2017, 2019, 2020"
+                ],
+                "captain": "Hardik Pandya",
+                "owner": "Indiawin Sports Pvt. Ltd",
+                "coach": "Mahela Jayawardene",
+                "venue": "Wankhede Stadium"
+            },
+            "squad": [
+                {
+                    "name": "ROHIT SHARMA",
+                    "role": "Batter",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/6.png"
+                },
+                {
+                    "name": "SURYA KUMAR YADAV",
+                    "role": "Batter",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/174.png"
+                },
+                {
+                    "name": "ROBIN MINZ",
+                    "role": "WK-Batter",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/3103.png"
+                },
+                {
+                    "name": "SHERFANE RUTHERFORD",
+                    "role": "Batter",
+                    "photo": "https://documents.iplt20.com/ipl/assets/images/Default-Men.png"
+                },
+                {
+                    "name": "RYAN RICKELTON",
+                    "role": "WK-Batter",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/743.png"
+                },
+                {
+                    "name": "QUINTON DE KOCK",
+                    "role": "WK-Batter",
+                    "photo": "https://documents.iplt20.com/ipl/assets/images/Default-Men.png"
+                },
+                {
+                    "name": "DANISH MALEWAR",
+                    "role": "Batter",
+                    "photo": "https://documents.iplt20.com/ipl/assets/images/Default-Men.png"
+                },
+                {
+                    "name": "N. TILAK VARMA",
+                    "role": "Batter",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/993.png"
+                },
+                {
+                    "name": "HARDIK PANDYA",
+                    "role": "All-Rounder",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/54.png"
+                },
+                {
+                    "name": "NAMAN DHIR",
+                    "role": "All-Rounder",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/3107.png"
+                },
+                {
+                    "name": "MITCHELL SANTNER",
+                    "role": "All-Rounder",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/75.png"
+                },
+                {
+                    "name": "RAJ ANGAD BAWA",
+                    "role": "All-Rounder",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/781.png"
+                },
+                {
+                    "name": "ATHARVA ANKOLEKAR",
+                    "role": "All-Rounder",
+                    "photo": "https://documents.iplt20.com/ipl/assets/images/Default-Men.png"
+                },
+                {
+                    "name": "MAYANK RAWAT",
+                    "role": "All-Rounder",
+                    "photo": "https://documents.iplt20.com/ipl/assets/images/Default-Men.png"
+                },
+                {
+                    "name": "CORBIN BOSCH",
+                    "role": "All-Rounder",
+                    "photo": "https://documents.iplt20.com/ipl/assets/images/Default-Men.png"
+                },
+                {
+                    "name": "WILL JACKS",
+                    "role": "All-Rounder",
+                    "photo": "https://documents.iplt20.com/ipl/assets/images/Default-Men.png"
+                },
+                {
+                    "name": "SHARDUL THAKUR",
+                    "role": "All-Rounder",
+                    "photo": "https://documents.iplt20.com/ipl/assets/images/Default-Men.png"
+                },
+                {
+                    "name": "TRENT BOULT",
+                    "role": "Bowler",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/66.png"
+                },
+                {
+                    "name": "MAYANK MARKANDE",
+                    "role": "Bowler",
+                    "photo": "https://documents.iplt20.com/ipl/assets/images/Default-Men.png"
+                },
+                {
+                    "name": "DEEPAK CHAHAR",
+                    "role": "Bowler",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/91.png"
+                },
+                {
+                    "name": "ASHWANI KUMAR",
+                    "role": "Bowler",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/3569.png"
+                },
+                {
+                    "name": "RAGHU SHARMA",
+                    "role": "Bowler",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/3869.png"
+                },
+                {
+                    "name": "MOHAMMAD IZHAR",
+                    "role": "Bowler",
+                    "photo": "https://documents.iplt20.com/ipl/assets/images/Default-Men.png"
+                },
+                {
+                    "name": "ALLAH GHAZANFAR",
+                    "role": "Bowler",
+                    "photo": "https://documents.iplt20.com/ipl/assets/images/Default-Men.png"
+                },
+                {
+                    "name": "JASPRIT BUMRAH",
+                    "role": "Bowler",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/9.png"
+                }
+            ]
+        }
+    },
+    "PBKS": {
+        "theme": {
+            "primary": "#DD1F2D", // Red
+            "secondary": "#A71522", // Dark Red
+            "accent": "#DCDDDF" // Silver
+        },
+        "data": {
+            "team": {
+                "name": "Punjab Kings Official Team Site",
+                "logo": "https://documents.iplt20.com/ipl/PBKS/Logos/Logooutline/PBKSoutline.png",
+                "winning_years": [],
+                "captain": "Shreyas Iyer",
+                "owner": "K.P.H. Dream Cricket Private Limited",
+                "coach": "Ricky Ponting",
+                "venue": "PCA New Stadium, Mullanpur"
+            },
+            "squad": [
+                {
+                    "name": "SHREYAS IYER",
+                    "role": "Batter",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/12.png"
+                },
+                {
+                    "name": "NEHAL WADHERA",
+                    "role": "Batter",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/1541.png"
+                },
+                {
+                    "name": "VISHNU VINOD",
+                    "role": "WK-Batter",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/581.png"
+                },
+                {
+                    "name": "HARNOOR PANNU",
+                    "role": "Batter",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/784.png"
+                },
+                {
+                    "name": "PYLA AVINASH",
+                    "role": "Batter",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/3573.png"
+                },
+                {
+                    "name": "PRABHSIMRAN SINGH",
+                    "role": "WK-Batter",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/137.png"
+                },
+                {
+                    "name": "SHASHANK SINGH",
+                    "role": "Batter",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/191.png"
+                },
+                {
+                    "name": "MARCUS STOINIS",
+                    "role": "All-Rounder",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/23.png"
+                },
+                {
+                    "name": "HARPREET BRAR",
+                    "role": "All-Rounder",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/130.png"
+                },
+                {
+                    "name": "MARCO JANSEN",
+                    "role": "All-Rounder",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/586.png"
+                },
+                {
+                    "name": "AZMATULLAH OMARZAI",
+                    "role": "All-Rounder",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/1354.png"
+                },
+                {
+                    "name": "PRIYANSH ARYA",
+                    "role": "All-Rounder",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/3571.png"
+                },
+                {
+                    "name": "MUSHEER KHAN",
+                    "role": "All-Rounder",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/2813.png"
+                },
+                {
+                    "name": "SURYANSH SHEDGE",
+                    "role": "All-Rounder",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/2146.png"
+                },
+                {
+                    "name": "MITCH OWEN",
+                    "role": "Batter",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/3870.png"
+                },
+                {
+                    "name": "COOPER CONNOLLY",
+                    "role": "All-Rounder",
+                    "photo": "https://documents.iplt20.com/ipl/assets/images/Default-Men.png"
+                },
+                {
+                    "name": "BEN DWARSHUIS",
+                    "role": "All-Rounder",
+                    "photo": "https://documents.iplt20.com/ipl/assets/images/Default-Men.png"
+                },
+                {
+                    "name": "ARSHDEEP SINGH",
+                    "role": "Bowler",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/125.png"
+                },
+                {
+                    "name": "YUZVENDRA CHAHAL",
+                    "role": "Bowler",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/10.png"
+                },
+                {
+                    "name": "VYSHAK VIJAYKUMAR",
+                    "role": "Bowler",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/2034.png"
+                },
+                {
+                    "name": "YASH THAKUR",
+                    "role": "Bowler",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/1550.png"
+                },
+                {
+                    "name": "XAVIER BARTLETT",
+                    "role": "Bowler",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/3572.png"
+                },
+                {
+                    "name": "PRAVIN DUBEY",
+                    "role": "Bowler",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/548.png"
+                },
+                {
+                    "name": "VISHAL NISHAD",
+                    "role": "Bowler",
+                    "photo": "https://documents.iplt20.com/ipl/assets/images/Default-Men.png"
+                },
+                {
+                    "name": "LOCKIE FERGUSON",
+                    "role": "Bowler",
+                    "photo": "https://documents.iplt20.com/ipl/assets/images/Default-Men.png"
+                }
+            ]
+        }
+    },
+    "RR": {
+        "theme": {
+            "primary": "#EB4C93", // Pink
+            "secondary": "#254AA5", // Royal Blue
+            "accent": "#FFFFFF" // White
+        },
+        "data": {
+            "team": {
+                "name": "Rajasthan Royals 2008 Official Team Site",
+                "logo": "https://documents.iplt20.com/ipl/RR/Logos/RR_Logo.png",
+                "winning_years": [
+                    "2008"
+                ],
+                "captain": "N/A",
+                "owner": "Royal Multisport Private Limited",
+                "coach": "Kumar Sangakkara",
+                "venue": "Sawai Mansingh Stadium"
+            },
+            "squad": [
+                {
+                    "name": "SHUBHAM DUBEY",
+                    "role": "Batter",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/3112.png"
+                },
+                {
+                    "name": "VAIBHAV SURYAVANSHI",
+                    "role": "Batter",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/3498.png"
+                },
+                {
+                    "name": "DONOVAN FERREIRA",
+                    "role": "WK-Batter",
+                    "photo": "https://documents.iplt20.com/ipl/assets/images/Default-Men.png"
+                },
+                {
+                    "name": "LHUAN-DRE PRETORIUS",
+                    "role": "Batter",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/2827.png"
+                },
+                {
+                    "name": "RAVI SINGH",
+                    "role": "WK-Batter",
+                    "photo": "https://documents.iplt20.com/ipl/assets/images/Default-Men.png"
+                },
+                {
+                    "name": "AMAN RAO PERALA",
+                    "role": "Batter",
+                    "photo": "https://documents.iplt20.com/ipl/assets/images/Default-Men.png"
+                },
+                {
+                    "name": "SHIMRON HETMYER",
+                    "role": "Batter",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/210.png"
+                },
+                {
+                    "name": "YASHASVI JAISWAL",
+                    "role": "Batter",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/533.png"
+                },
+                {
+                    "name": "DHRUV JUREL",
+                    "role": "WK-Batter",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/1004.png"
+                },
+                {
+                    "name": "RIYAN PARAG",
+                    "role": "Batter",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/189.png"
+                },
+                {
+                    "name": "YUDHVIR SINGH CHARAK",
+                    "role": "All-Rounder",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/587.png"
+                },
+                {
+                    "name": "RAVINDRA JADEJA",
+                    "role": "All-Rounder",
+                    "photo": "https://documents.iplt20.com/ipl/assets/images/Default-Men.png"
+                },
+                {
+                    "name": "SAM CURRAN",
+                    "role": "All-Rounder",
+                    "photo": "https://documents.iplt20.com/ipl/assets/images/Default-Men.png"
+                },
+                {
+                    "name": "JOFRA ARCHER",
+                    "role": "Bowler",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/181.png"
+                },
+                {
+                    "name": "TUSHAR DESHPANDE",
+                    "role": "Bowler",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/539.png"
+                },
+                {
+                    "name": "KWENA MAPHAKA",
+                    "role": "Bowler",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/801.png"
+                },
+                {
+                    "name": "RAVI BISHNOI",
+                    "role": "Bowler",
+                    "photo": "https://documents.iplt20.com/ipl/assets/images/Default-Men.png"
+                },
+                {
+                    "name": "SUSHANT MISHRA",
+                    "role": "Bowler",
+                    "photo": "https://documents.iplt20.com/ipl/assets/images/Default-Men.png"
+                },
+                {
+                    "name": "YASH RAJ PUNJA",
+                    "role": "Bowler",
+                    "photo": "https://documents.iplt20.com/ipl/assets/images/Default-Men.png"
+                },
+                {
+                    "name": "VIGNESH PUTHUR",
+                    "role": "Bowler",
+                    "photo": "https://documents.iplt20.com/ipl/assets/images/Default-Men.png"
+                },
+                {
+                    "name": "BRIJESH SHARMA",
+                    "role": "Bowler",
+                    "photo": "https://documents.iplt20.com/ipl/assets/images/Default-Men.png"
+                },
+                {
+                    "name": "ADAM MILNE",
+                    "role": "Bowler",
+                    "photo": "https://documents.iplt20.com/ipl/assets/images/Default-Men.png"
+                },
+                {
+                    "name": "KULDEEP SEN",
+                    "role": "Bowler",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2024/1005.png"
+                },
+                {
+                    "name": "SANDEEP SHARMA",
+                    "role": "Bowler",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2024/220.png"
+                },
+                {
+                    "name": "NANDRE BURGER",
+                    "role": "Bowler",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2024/2806.png"
+                }
+            ]
+        }
+    },
+    "RCB": {
+        "theme": {
+            "primary": "#D11D2D", // Red
+            "secondary": "#2B2A29", // Black
+            "accent": "#CBA92B" // Gold
+        },
+        "data": {
+            "team": {
+                "name": "Royal Challengers Bengaluru 2025 Official Team Site",
+                "logo": "https://documents.iplt20.com/ipl/RCB/Logos/Logooutline/RCBoutline.png",
+                "winning_years": [
+                    "2025"
+                ],
+                "captain": "Rajat Patidar",
+                "owner": "Royal Challengers Sports Private Ltd",
+                "coach": "Andy Flower",
+                "venue": "M. Chinnaswamy Stadium"
+            },
+            "squad": [
+                {
+                    "name": "RAJAT PATIDAR",
+                    "role": "Batter",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/597.png"
+                },
+                {
+                    "name": "DEVDUTT PADIKKAL",
+                    "role": "Batter",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/200.png"
+                },
+                {
+                    "name": "VIRAT KOHLI",
+                    "role": "Batter",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/2.png"
+                },
+                {
+                    "name": "PHIL SALT",
+                    "role": "WK-Batter",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/1220.png"
+                },
+                {
+                    "name": "JITESH SHARMA",
+                    "role": "WK-Batter",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/1000.png"
+                },
+                {
+                    "name": "JORDAN COX",
+                    "role": "WK-Batter",
+                    "photo": "https://documents.iplt20.com/ipl/assets/images/Default-Men.png"
+                },
+                {
+                    "name": "KRUNAL PANDYA",
+                    "role": "All-Rounder",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/17.png"
+                },
+                {
+                    "name": "SWAPNIL SINGH",
+                    "role": "All-Rounder",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/1483.png"
+                },
+                {
+                    "name": "TIM DAVID",
+                    "role": "All-Rounder",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/636.png"
+                },
+                {
+                    "name": "ROMARIO SHEPHERD",
+                    "role": "All-Rounder",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/371.png"
+                },
+                {
+                    "name": "JACOB BETHELL",
+                    "role": "All-Rounder",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/869.png"
+                },
+                {
+                    "name": "VENKATESH IYER",
+                    "role": "All-Rounder",
+                    "photo": "https://documents.iplt20.com/ipl/assets/images/Default-Men.png"
+                },
+                {
+                    "name": "SATVIK DESWAL",
+                    "role": "All-Rounder",
+                    "photo": "https://documents.iplt20.com/ipl/assets/images/Default-Men.png"
+                },
+                {
+                    "name": "MANGESH YADAV",
+                    "role": "All-Rounder",
+                    "photo": "https://documents.iplt20.com/ipl/assets/images/Default-Men.png"
+                },
+                {
+                    "name": "VICKY OSTWAL",
+                    "role": "All-Rounder",
+                    "photo": "https://documents.iplt20.com/ipl/assets/images/Default-Men.png"
+                },
+                {
+                    "name": "VIHAAN MALHOTRA",
+                    "role": "All-Rounder",
+                    "photo": "https://documents.iplt20.com/ipl/assets/images/Default-Men.png"
+                },
+                {
+                    "name": "KANISHK CHOUHAN",
+                    "role": "All-Rounder",
+                    "photo": "https://documents.iplt20.com/ipl/assets/images/Default-Men.png"
+                },
+                {
+                    "name": "JOSH HAZLEWOOD",
+                    "role": "Bowler",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/36.png"
+                },
+                {
+                    "name": "RASIKH DAR",
+                    "role": "Bowler",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/172.png"
+                },
+                {
+                    "name": "SUYASH SHARMA",
+                    "role": "Bowler",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/1932.png"
+                },
+                {
+                    "name": "BHUVNESHWAR KUMAR",
+                    "role": "Bowler",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/15.png"
+                },
+                {
+                    "name": "NUWAN THUSHARA",
+                    "role": "Bowler",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/813.png"
+                },
+                {
+                    "name": "ABHINANDAN SINGH",
+                    "role": "Bowler",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/3574.png"
+                },
+                {
+                    "name": "JACOB DUFFY",
+                    "role": "Bowler",
+                    "photo": "https://documents.iplt20.com/ipl/assets/images/Default-Men.png"
+                },
+                {
+                    "name": "YASH DAYAL",
+                    "role": "Bowler",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/978.png"
+                }
+            ]
+        }
+    },
+    "SRH": {
+        "theme": {
+            "primary": "#F78F2E", // Orange
+            "secondary": "#282828", // Black
+            "accent": "#EA1A85" // Accent
+        },
+        "data": {
+            "team": {
+                "name": "Sunrisers Hyderabad 2016 Official Team Site",
+                "logo": "https://documents.iplt20.com/ipl/SRH/Logos/Logooutline/SRHoutline.png",
+                "winning_years": [
+                    "2016"
+                ],
+                "captain": "Pat Cummins",
+                "owner": "Sun TV Network Limited",
+                "coach": "Daniel Vettori",
+                "venue": "Rajiv Gandhi Intl. Cricket Stadium"
+            },
+            "squad": [
+                {
+                    "name": "ISHAN KISHAN",
+                    "role": "WK-Batter",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/164.png"
+                },
+                {
+                    "name": "ANIKET VERMA",
+                    "role": "Batter",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/3576.png"
+                },
+                {
+                    "name": "SMARAN RAVICHANDRAN",
+                    "role": "Batter",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/3752.png"
+                },
+                {
+                    "name": "SALIL ARORA",
+                    "role": "WK-Batter",
+                    "photo": "https://documents.iplt20.com/ipl/assets/images/Default-Men.png"
+                },
+                {
+                    "name": "HEINRICH KLAASEN",
+                    "role": "WK-Batter",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/202.png"
+                },
+                {
+                    "name": "TRAVIS HEAD",
+                    "role": "Batter",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/37.png"
+                },
+                {
+                    "name": "HARSHAL PATEL",
+                    "role": "All-Rounder",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/114.png"
+                },
+                {
+                    "name": "KAMINDU MENDIS",
+                    "role": "All-Rounder",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/627.png"
+                },
+                {
+                    "name": "HARSH DUBEY",
+                    "role": "All-Rounder",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/1494.png"
+                },
+                {
+                    "name": "BRYDON CARSE",
+                    "role": "All-Rounder",
+                    "photo": "https://documents.iplt20.com/ipl/assets/images/Default-Men.png"
+                },
+                {
+                    "name": "SHIVANG KUMAR",
+                    "role": "All-Rounder",
+                    "photo": "https://documents.iplt20.com/ipl/assets/images/Default-Men.png"
+                },
+                {
+                    "name": "KRAINS FULETRA",
+                    "role": "All-Rounder",
+                    "photo": "https://documents.iplt20.com/ipl/assets/images/Default-Men.png"
+                },
+                {
+                    "name": "LIAM LIVINGSTONE",
+                    "role": "All-Rounder",
+                    "photo": "https://documents.iplt20.com/ipl/assets/images/Default-Men.png"
+                },
+                {
+                    "name": "JACK EDWARDS",
+                    "role": "All-Rounder",
+                    "photo": "https://documents.iplt20.com/ipl/assets/images/Default-Men.png"
+                },
+                {
+                    "name": "ABHISHEK SHARMA",
+                    "role": "All-Rounder",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/212.png"
+                },
+                {
+                    "name": "NITISH KUMAR REDDY",
+                    "role": "All-Rounder",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/1944.png"
+                },
+                {
+                    "name": "PAT CUMMINS",
+                    "role": "Bowler",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/33.png"
+                },
+                {
+                    "name": "ZEESHAN ANSARI",
+                    "role": "Bowler",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/3575.png"
+                },
+                {
+                    "name": "JAYDEV UNADKAT",
+                    "role": "Bowler",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/180.png"
+                },
+                {
+                    "name": "ESHAN MALINGA",
+                    "role": "Bowler",
+                    "photo": "https://documents.iplt20.com/ipl/IPLHeadshot2025/3339.png"
+                },
+                {
+                    "name": "SAKIB HUSSAIN",
+                    "role": "Bowler",
+                    "photo": "https://documents.iplt20.com/ipl/assets/images/Default-Men.png"
+                },
+                {
+                    "name": "ONKAR TARMALE",
+                    "role": "Bowler",
+                    "photo": "https://documents.iplt20.com/ipl/assets/images/Default-Men.png"
+                },
+                {
+                    "name": "AMIT KUMAR",
+                    "role": "Bowler",
+                    "photo": "https://documents.iplt20.com/ipl/assets/images/Default-Men.png"
+                },
+                {
+                    "name": "PRAFUL HINGE",
+                    "role": "Bowler",
+                    "photo": "https://documents.iplt20.com/ipl/assets/images/Default-Men.png"
+                },
+                {
+                    "name": "SHIVAM MAVI",
+                    "role": "Bowler",
+                    "photo": "https://documents.iplt20.com/ipl/assets/images/Default-Men.png"
+                }
+            ]
+        }
+    }
+};
+
+        // --- 2. RENDER FUNCTIONS ---
+        
+        function loadTeam(teamKey) {
+            const selected = teamsDB[teamKey];
+            if (!selected) return;
+
+            const tData = selected.data.team;
+            const squadData = selected.data.squad;
+            const theme = selected.theme;
+
+            // A. UPDATE THEME COLORS (CSS Variables)
+            document.documentElement.style.setProperty('--primary-bg', theme.primary);
+            document.documentElement.style.setProperty('--secondary-bg', theme.secondary);
+            document.documentElement.style.setProperty('--accent-color', theme.accent);
+
+            // B. UPDATE HEADER INFO
+            document.getElementById('teamName').textContent = tData.name;
+            document.getElementById('teamLogo').src = tData.logo;
+            
+            // Clean up winning years (sometimes they come as single strings with commas)
+            const trophyContainer = document.getElementById('trophyCase');
+            trophyContainer.innerHTML = ''; // Clear old trophies
+            
+            let years = [];
+            // Handle array ["2012, 2014"] vs ["2022"]
+            tData.winning_years.forEach(entry => {
+                if(entry.includes(',')) {
+                    years = years.concat(entry.split(',').map(y => y.trim()));
+                } else {
+                    years.push(entry);
+                }
+            });
+
+            years.forEach(year => {
+                const badge = document.createElement('div');
+                badge.className = 'trophy-badge';
+                badge.innerHTML = `🏆 ${year}`;
+                trophyContainer.appendChild(badge);
+            });
+
+            // C. UPDATE INFO BAR
+            document.getElementById('t-captain').textContent = tData.captain;
+            document.getElementById('t-coach').textContent = tData.coach;
+            document.getElementById('t-owner').textContent = tData.owner;
+            document.getElementById('t-venue').textContent = tData.venue;
+
+            // D. RENDER SQUAD
+            const grid = document.getElementById('squadGrid');
+            grid.innerHTML = ''; // Clear old players
+
+            squadData.forEach((player, index) => {
+                const card = document.createElement('div');
+                card.className = 'player-card';
+                // Add staggered animation delay
+                card.style.animationDelay = `${index * 0.05}s`;
+
+                // Check Captaincy match
+                const isCaptain = player.name.toLowerCase() === tData.captain.toLowerCase();
+
+                card.innerHTML = `
+                    ${isCaptain ? '<div class="captain-badge" title="Captain">C</div>' : ''}
+                    <div class="card-img-wrap">
+                        <img src="${player.photo}" alt="${player.name}" 
+                             onerror="this.src='https://documents.iplt20.com/ipl/assets/images/Default-Men.png'">
+                    </div>
+                    <div class="card-info">
+                        <div class="p-name">${player.name}</div>
+                        <div class="p-role">${player.role}</div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // --- 3. EVENT LISTENERS ---
+        
+        const selector = document.getElementById('teamSelect');
+        selector.addEventListener('change', (e) => {
+            loadTeam(e.target.value);
+        });
+
+        // Initialize with first team (GT)
+        loadTeam('GT');
+
+    </script>
+</body>
+</html>
